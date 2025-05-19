@@ -548,7 +548,7 @@ type Planet @model(name:""Planet"") {
                                   Mappings: null);
 
             string entityName = "Planet";
-            RuntimeConfig configuration = ConfigurationTests.InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions, entity, entityName);
+            RuntimeConfig configuration = ConfigurationTests.InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions, new(), entity, entityName);
 
             const string CUSTOM_CONFIG = "custom-config.json";
             const string CUSTOM_SCHEMA = "custom-schema.gql";
@@ -677,7 +677,7 @@ type Planet @model(name:""Planet"") {
                                   Mappings: null);
 
             string entityName = "Planet";
-            RuntimeConfig configuration = ConfigurationTests.InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions, entity, entityName);
+            RuntimeConfig configuration = ConfigurationTests.InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions, new(), entity, entityName);
 
             const string CUSTOM_CONFIG = "custom-config.json";
             const string CUSTOM_SCHEMA = "custom-schema.gql";

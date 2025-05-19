@@ -126,10 +126,8 @@ namespace Azure.DataApiBuilder.Service.Tests.Authorization
                 Runtime: new(
                     Rest: new(),
                     GraphQL: new(),
-                    Host: new(
-                        Cors: null,
-                        Authentication: new(authProvider, null)
-                    )
+                    Mcp: null,
+                    Host: new(null, null)
                 ),
                 Entities: new(new Dictionary<string, Entity> { { entityName, sampleEntity } })
             );

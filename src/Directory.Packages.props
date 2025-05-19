@@ -60,6 +60,7 @@
         <PackageVersion Include="Verify.MsTest" Version="23.6.0" />
         <PackageVersion Include="Verify.DiffPlex" Version="2.3.0" />
         <PackageVersion Include="ZiggyCreatures.FusionCache" Version="1.0.0" />
+        <PackageVersion Include="ModelContextProtocol" Version="0.1.0-preview.10" />
     </ItemGroup>
     <ItemGroup>
         <GlobalPackageReference Include="StyleCop.Analyzers" Version="1.1.118" />

@@ -349,7 +349,8 @@ namespace Azure.DataApiBuilder.Service.Tests.SqlTests
                 Runtime: new(
                     Rest: new(),
                     GraphQL: new(),
-                    Host: new(Cors: null, Authentication: authenticationOptions)
+                    Mcp: null,
+                    Host: new(Cors: null, Authentication: null)
                 ),
                 Entities: new(new Dictionary<string, Entity>())
             );
@@ -643,7 +644,7 @@ namespace Azure.DataApiBuilder.Service.Tests.SqlTests
   ""$schema"": ""../../project-dab/playground/dab.draft-01.schema.json"",
   ""data-source"": {
     ""database-type"": """ + dbType.ToLower() + @""",
-    ""connection-string"": """"
+    ""connection-string"": """" 
   },
   """ + dbType.ToLower() + @""": {
     ""set-session-context"": true
@@ -651,7 +652,7 @@ namespace Azure.DataApiBuilder.Service.Tests.SqlTests
   ""runtime"": {
     ""rest"": {
       ""enabled"": true,
-      ""path"": ""/api""
+      ""path"": ""/api"" 
     },
     ""graphql"": {
       ""enabled"": true,
@@ -669,7 +670,7 @@ namespace Azure.DataApiBuilder.Service.Tests.SqlTests
         ""jwt"": {
           ""audience"": """",
           ""issuer"": """",
-          ""issuer-key"": """"
+          ""issuer-key"": """" 
         }
       }
     }
@@ -875,6 +876,7 @@ namespace Azure.DataApiBuilder.Service.Tests.SqlTests
     }
   }
 }";
+
         }
     }
 }

@@ -354,10 +354,11 @@ namespace Azure.DataApiBuilder.Service.Tests.UnitTests
                     Schema: "",
                     DataSource: new(DatabaseType.PostgreSQL, "", new()),
                     Runtime: new(
-                        Rest: new(Path: "/api"),
+                        Rest: new(),
                         GraphQL: new(),
+                        Mcp: null,
                         Host: new(Cors: null, Authentication: null)
-                        ),
+                    ),
                     Entities: new(new Dictionary<string, Entity>()
                     {
                         { DEFAULT_NAME, new Entity(entitySource, new EntityGraphQLOptions(findRequestContext.EntityName, findRequestContext.EntityName), new EntityRestOptions(new SupportedHttpVerb[0]), null, null, null) }

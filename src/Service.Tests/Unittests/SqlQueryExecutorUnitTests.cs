@@ -76,11 +76,12 @@ namespace Azure.DataApiBuilder.Service.Tests.UnitTests
         {
             RuntimeConfig mockConfig = new(
                Schema: "",
-               DataSource: new(DatabaseType.MSSQL, connectionString, new()),
+               DataSource: new(DatabaseType.MSSQL, connectionString, new() {}),
                Runtime: new(
                    Rest: new(),
                    GraphQL: new(),
-                   Host: new(null, null)
+                   Mcp: null,
+                   Host: new(Cors: null, Authentication: null)
                ),
                Entities: new(new Dictionary<string, Entity>())
            );
@@ -150,11 +151,12 @@ namespace Azure.DataApiBuilder.Service.Tests.UnitTests
             int maxAttempts = maxRetries + 1; // 1 represents the original attempt to execute the query in addition to retries.
             RuntimeConfig mockConfig = new(
                Schema: "",
-               DataSource: new(DatabaseType.MSSQL, "", new()),
+               DataSource: new(DatabaseType.MSSQL, "", new() {}),
                Runtime: new(
                    Rest: new(),
                    GraphQL: new(),
-                   Host: new(null, null)
+                   Mcp: null,
+                   Host: new(Cors: null, Authentication: null)
                ),
                Entities: new(new Dictionary<string, Entity>())
            );
@@ -225,11 +227,12 @@ namespace Azure.DataApiBuilder.Service.Tests.UnitTests
             // Setup mock configuration
             RuntimeConfig mockConfig = new(
                Schema: "",
-               DataSource: new(DatabaseType.MSSQL, "Server =<>;Database=<>;", new()),
+               DataSource: new(DatabaseType.MSSQL, "Server =<>;Database=<>;", new() {}),
                Runtime: new(
                    Rest: new(),
                    GraphQL: new(),
-                   Host: new(null, null)
+                   Mcp: null,
+                   Host: new(Cors: null, Authentication: null)
                ),
                Entities: new(new Dictionary<string, Entity>())
            );
@@ -340,11 +343,12 @@ namespace Azure.DataApiBuilder.Service.Tests.UnitTests
         {
             RuntimeConfig mockConfig = new(
                Schema: "",
-               DataSource: new(DatabaseType.MSSQL, "", new()),
+               DataSource: new(DatabaseType.MSSQL, "", new() {}),
                Runtime: new(
                    Rest: new(),
                    GraphQL: new(),
-                   Host: new(null, null)
+                   Mcp: null,
+                   Host: new(Cors: null, Authentication: null)
                ),
                Entities: new(new Dictionary<string, Entity>())
            );
@@ -442,11 +446,12 @@ namespace Azure.DataApiBuilder.Service.Tests.UnitTests
         {
             RuntimeConfig mockConfig = new(
                Schema: "",
-               DataSource: new(DatabaseType.MSSQL, "", new()),
+               DataSource: new(DatabaseType.MSSQL, "", new() {}),
                Runtime: new(
                    Rest: new(),
                    GraphQL: new(),
-                   Host: new(null, null)
+                   Mcp: null,
+                   Host: new(Cors: null, Authentication: null)
                ),
                Entities: new(new Dictionary<string, Entity>())
            );
@@ -512,9 +517,11 @@ namespace Azure.DataApiBuilder.Service.Tests.UnitTests
                 Runtime: new(
                         Rest: new(),
                         GraphQL: new(),
+                        Mcp: null,
                         Host: new(Cors: null, Authentication: null, MaxResponseSizeMB: 5)
                     ),
-                Entities: new(new Dictionary<string, Entity>()));
+                Entities: new(new Dictionary<string, Entity>())
+            );
 
             RuntimeConfigProvider runtimeConfigProvider = TestHelper.GenerateInMemoryRuntimeConfigProvider(runtimeConfig);
 
@@ -573,9 +580,11 @@ namespace Azure.DataApiBuilder.Service.Tests.UnitTests
                 Runtime: new(
                         Rest: new(),
                         GraphQL: new(),
+                        Mcp: null,
                         Host: new(Cors: null, Authentication: null, MaxResponseSizeMB: 4)
                     ),
-                Entities: new(new Dictionary<string, Entity>()));
+                Entities: new(new Dictionary<string, Entity>())
+            );
 
             RuntimeConfigProvider runtimeConfigProvider = TestHelper.GenerateInMemoryRuntimeConfigProvider(runtimeConfig);
 

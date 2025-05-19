@@ -496,6 +496,7 @@ namespace Azure.DataApiBuilder.Service.Tests.Configuration
                     Health: new(enabled: enableGlobalHealth),
                     Rest: new(Enabled: enableGlobalRest),
                     GraphQL: new(Enabled: enableGlobalGraphql),
+                    Mcp: null,
                     Host: hostOptions
                 ),
                 Entities: new(entityMap));

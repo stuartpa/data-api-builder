@@ -129,9 +129,10 @@ public class AuthorizationResolverHotReloadTests
             Schema: "https://github.com/Azure/data-api-builder/releases/download/vmajor.minor.patch/dab.draft.schema.json",
             DataSource: dataSource,
             Runtime: new(
-                Rest: new(Enabled: true),
-                GraphQL: new(), // GraphQL doesn't yet support hot-reload
-                Host: hostOptions
+                Rest: new(),
+                GraphQL: new(),
+                Mcp: null,
+                Host: new(null, null)
             ),
             Entities: new(entityMap));
 

@@ -59,6 +59,11 @@ public record RuntimeConfig
         Runtime.GraphQL is null ||
         Runtime.GraphQL.Enabled;
 
+    [JsonIgnore]
+    public bool IsMcpEnabled => Runtime is null ||
+    Runtime.Mcp is null ||
+    Runtime.Mcp.Enabled;
+
     /// <summary>
     /// Retrieves the value of runtime.rest.enabled property if present, default is true if its not cosmosdb.
     /// </summary>

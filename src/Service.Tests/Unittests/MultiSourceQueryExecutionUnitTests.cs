@@ -251,7 +251,13 @@ namespace Azure.DataApiBuilder.Service.Tests.UnitTests
                Runtime: new(
                    Rest: new(),
                    GraphQL: new(),
-                   Host: new(Cors: null, Authentication: null)
+                   Mcp: null,
+                   Host: new(Cors: null, Authentication: null),
+                   BaseRoute: null,
+                   Telemetry: null,
+                   Cache: null,
+                   Pagination: null,
+                   Health: null
                ),
                DefaultDataSourceName: DATA_SOURCE_NAME_1,
                DataSourceNameToDataSource: dataSourceNameToDataSource,
@@ -312,6 +318,7 @@ namespace Azure.DataApiBuilder.Service.Tests.UnitTests
                Runtime: new(
                    Rest: new(),
                    GraphQL: new(),
+                   Mcp: new(),
                    // use prod mode to avoid having to mock config file watcher
                    Host: new(Cors: null, Authentication: null, HostMode.Production)
                ),

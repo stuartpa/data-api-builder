@@ -88,6 +88,7 @@ namespace Azure.DataApiBuilder.Service.Tests.GraphQLBuilder
             string targetEntityName = "Author";
             string sourceTargetLinkingNodeName = GenerateLinkingNodeName(
                         GetDefinedSingularName(sourceEntityName, _runtimeConfig.Entities[sourceEntityName]),
+
                         GetDefinedSingularName(targetEntityName, _runtimeConfig.Entities[targetEntityName]));
             ObjectTypeDefinitionNode sourceTargetLinkingObjectTypeDefinitionNode = GetObjectTypeDefinitionNode(sourceTargetLinkingNodeName);
 
@@ -358,12 +359,13 @@ namespace Azure.DataApiBuilder.Service.Tests.GraphQLBuilder
             // to multiple create operation.
             runtimeConfig = runtimeConfig with
             {
-                Runtime = new RuntimeOptions(Rest: runtimeConfig.Runtime.Rest,
-                                                                GraphQL: new GraphQLRuntimeOptions(MultipleMutationOptions: new MultipleMutationOptions(new MultipleCreateOptions(enabled: true))),
-                                                                Host: runtimeConfig.Runtime.Host,
-                                                                BaseRoute: runtimeConfig.Runtime.BaseRoute,
-                                                                Telemetry: runtimeConfig.Runtime.Telemetry,
-                                                                Cache: runtimeConfig.Runtime.Cache)
+                Runtime = new RuntimeOptions(Rest: runtimeConfig.Runtime.Rest, Mcp: null,
+                                            GraphQL: new GraphQLRuntimeOptions(MultipleMutationOptions: new MultipleMutationOptions(new MultipleCreateOptions(enabled: true))),
+
+                                            Host: runtimeConfig.Runtime.Host,
+                                            BaseRoute: runtimeConfig.Runtime.BaseRoute,
+                                            Telemetry: runtimeConfig.Runtime.Telemetry,
+                                            Cache: runtimeConfig.Runtime.Cache)
             };
 
             // For testing different aspects of schema generation for multiple create operation, we need to create a RuntimeConfigProvider object which contains a RuntimeConfig object

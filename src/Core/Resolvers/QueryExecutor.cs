@@ -313,7 +313,7 @@ namespace Azure.DataApiBuilder.Core.Resolvers
                         correlationId,
                         e.Message);
                     throw DbExceptionParser.Parse(e);
-                }
+                }   
 
                 return result;
             }

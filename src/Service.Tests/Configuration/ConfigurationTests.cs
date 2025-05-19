@@ -1477,7 +1477,7 @@ type Moon {
                 GetConnectionStringFromEnvironmentConfig(environment: TestCategory.MSSQL),
                 Options: null);
 
-            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, new(), new());
+            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, new(), new(), new());
 
             // creating an entity with invalid table name
             Entity entityWithInvalidSourceName = new(
@@ -1548,7 +1548,7 @@ type Moon {
                 GetConnectionStringFromEnvironmentConfig(environment: TestCategory.MSSQL),
                 Options: null);
 
-            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, new(), new());
+            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, new(), new(), new());
 
             // creating an entity with invalid table name
             Entity entityWithInvalidSource = new(
@@ -2054,7 +2054,7 @@ type Moon {
                 GetConnectionStringFromEnvironmentConfig(environment: TestCategory.MSSQL),
                 Options: null);
 
-            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, new());
+            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, new(), new());
             const string CUSTOM_CONFIG = "custom-config.json";
             File.WriteAllText(CUSTOM_CONFIG, configuration.ToJson());
 
@@ -2383,7 +2383,7 @@ type Moon {
             DataSource dataSource = new(DatabaseType.MSSQL,
                 GetConnectionStringFromEnvironmentConfig(environment: TestCategory.MSSQL), Options: null);
 
-            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions);
+            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions, new());
             const string CUSTOM_CONFIG = "custom-config.json";
             File.WriteAllText(CUSTOM_CONFIG, configuration.ToJson());
 
@@ -2488,7 +2488,7 @@ type Moon {
                                   Mappings: null);
 
             string entityName = "Stock";
-            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions, entity, entityName);
+            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions, new(), entity, entityName);
 
             const string CUSTOM_CONFIG = "custom-config.json";
             File.WriteAllText(CUSTOM_CONFIG, configuration.ToJson());
@@ -2789,7 +2789,7 @@ type Moon {
                                   Mappings: null);
 
             string entityName = "Stock";
-            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions, entity, entityName);
+            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions, new(), entity, entityName);
 
             const string CUSTOM_CONFIG = "custom-config.json";
             File.WriteAllText(CUSTOM_CONFIG, configuration.ToJson());
@@ -2915,11 +2915,11 @@ type Moon {
                              );
 
                 string entityName = "GetBooks";
-                configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions, entity, entityName);
+                configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions, new(), entity, entityName);
             }
             else
             {
-                configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions);
+                configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions, new());
             }
 
             const string CUSTOM_CONFIG = "custom-config.json";
@@ -3013,11 +3013,11 @@ type Moon {
                              );
 
                 string entityName = "GetBooks";
-                configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions, entity, entityName);
+                configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions, new(), entity, entityName);
             }
             else
             {
-                configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions);
+                configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions, new());
             }
 
             const string CUSTOM_CONFIG = "custom-config.json";
@@ -3026,7 +3026,7 @@ type Moon {
             HostOptions staticWebAppsHostOptions = new(null, authenticationOptions);
 
             RuntimeOptions runtimeOptions = configuration.Runtime;
-            RuntimeOptions baseRouteEnabledRuntimeOptions = new(runtimeOptions?.Rest, runtimeOptions?.GraphQL, staticWebAppsHostOptions, "/data-api");
+            RuntimeOptions baseRouteEnabledRuntimeOptions = new(runtimeOptions?.Rest, runtimeOptions?.GraphQL, runtimeOptions?.Mcp, staticWebAppsHostOptions, "/data-api");
             RuntimeConfig baseRouteEnabledConfig = configuration with { Runtime = baseRouteEnabledRuntimeOptions };
             File.WriteAllText(CUSTOM_CONFIG, baseRouteEnabledConfig.ToJson());
 
@@ -3129,8 +3129,9 @@ type Moon {
             {
                 HttpMethod httpMethod = SqlTestHelper.ConvertRestMethodToHttpMethod(SupportedHttpVerb.Post);
                 string requestBody = @"{
-                        ""title"": ""Harry Potter and the Order of Phoenix"",
-                        ""publisher_id"": 1234";
+                   ""title"": ""Harry Potter and the Order of Phoenix"",
+                   ""publisher_id"": 1234
+                }";
 
                 if (includeExtraneousFieldInRequestBody)
                 {
@@ -3185,7 +3186,7 @@ type Moon {
                 Mappings: null
             );
 
-            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, new(), new(), viewEntity, "books_view_all");
+            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, new(), new(), new(), viewEntity, "books_view_all");
 
             const string CUSTOM_CONFIG = "custom-config.json";
 
@@ -3406,6 +3407,7 @@ type Planet @model(name:""PlanetAlias"") {
             RuntimeOptions runtimeOptions = new(
                 Rest: new(),
                 GraphQL: new(),
+                Mcp: new(),
                 Host: new(Cors: null, authenticationOptions, hostMode)
             );
             RuntimeConfig configWithCustomHostMode = config with { Runtime = runtimeOptions };
@@ -3449,7 +3451,7 @@ type Planet @model(name:""PlanetAlias"") {
 
             DataSource dataSource = new(DatabaseType.MSSQL, GetConnectionStringFromEnvironmentConfig(environment: TestCategory.MSSQL), Options: null);
 
-            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions);
+            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions, new());
             const string CUSTOM_CONFIG = "custom-config.json";
             File.WriteAllText(CUSTOM_CONFIG, configuration.ToJson());
 
@@ -3521,7 +3523,7 @@ type Planet @model(name:""PlanetAlias"") {
                 Mappings: mappings
             );
 
-            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions, entity, "graphqlNameCompat");
+            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restRuntimeOptions, new(), entity, "graphqlNameCompat");
             const string CUSTOM_CONFIG = "custom-config.json";
             File.WriteAllText(CUSTOM_CONFIG, configuration.ToJson());
 
@@ -3577,7 +3579,7 @@ type Planet @model(name:""PlanetAlias"") {
             RuntimeConfig configuration = InitMinimalRuntimeConfig(
                 dataSource: dataSource,
                 graphqlOptions: new(),
-                restOptions: new(Path: customRestPath));
+                restOptions: new(Path: customRestPath), mcpOptions: new());
 
             configuration = configuration
                 with
@@ -3895,6 +3897,7 @@ type Planet @model(name:""PlanetAlias"") {
                 Runtime: new(
                     Rest: new(),
                     GraphQL: new(),
+                    Mcp: new(),
                     Host: new(null, null),
                     Telemetry: new(LoggerLevel: logLevelOptions)
                 ),
@@ -3934,7 +3937,7 @@ type Planet @model(name:""PlanetAlias"") {
             { "Book", requiredEntity }
         };
 
-            CreateCustomConfigFile(entityMap, globalRestEnabled);
+            CreateCustomConfigFile(entityMap, globalRestEnabled, true);
 
             string[] args = new[]
             {
@@ -3995,7 +3998,7 @@ type Planet @model(name:""PlanetAlias"") {
                 { "Book", requiredEntity }
             };
 
-            CreateCustomConfigFile(entityMap, enableGlobalRest: true);
+            CreateCustomConfigFile(entityMap, enableGlobalRest: true, enableGlobalMcp: true);
 
             string[] args = new[]
             {
@@ -4053,7 +4056,7 @@ type Planet @model(name:""PlanetAlias"") {
             { "Publisher", restDisabledEntity }
         };
 
-            CreateCustomConfigFile(entityMap, enableGlobalRest: true);
+            CreateCustomConfigFile(entityMap, enableGlobalRest: true, enableGlobalMcp: true);
 
             string[] args = new[]
             {
@@ -4132,7 +4135,7 @@ type Planet @model(name:""PlanetAlias"") {
                 { ENTITY_NAME, requiredEntity }
             };
 
-            CreateCustomConfigFile(entityMap, enableGlobalRest: true);
+            CreateCustomConfigFile(entityMap, enableGlobalRest: true, enableGlobalMcp: true);
 
             string[] args = new[]
             {
@@ -4224,7 +4227,7 @@ type Planet @model(name:""PlanetAlias"") {
             DataSource dataSource = new(DatabaseType.MSSQL,
                 GetConnectionStringFromEnvironmentConfig(environment: TestCategory.MSSQL), Options: null);
 
-            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restOptions: new());
+            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restOptions: new(), mcpOptions: new());
             const string CUSTOM_CONFIG = "custom-config.json";
             File.WriteAllText(CUSTOM_CONFIG, configuration.ToJson());
 
@@ -4323,7 +4326,7 @@ type Planet @model(name:""PlanetAlias"") {
             DataSource dataSource = new(DatabaseType.MSSQL,
                 GetConnectionStringFromEnvironmentConfig(environment: TestCategory.MSSQL), Options: null);
 
-            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restOptions: new());
+            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restOptions: new(), mcpOptions: new());
             const string CUSTOM_CONFIG = "custom-config.json";
             File.WriteAllText(CUSTOM_CONFIG, configuration.ToJson());
 
@@ -4406,7 +4409,7 @@ type Planet @model(name:""PlanetAlias"") {
             DataSource dataSource = new(DatabaseType.MSSQL,
                 GetConnectionStringFromEnvironmentConfig(environment: TestCategory.MSSQL), Options: null);
 
-            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restOptions: new());
+            RuntimeConfig configuration = InitMinimalRuntimeConfig(dataSource, graphqlOptions, restOptions: new(), mcpOptions: new());
             const string CUSTOM_CONFIG = "custom-config.json";
             File.WriteAllText(CUSTOM_CONFIG, configuration.ToJson());
 
@@ -4455,7 +4458,7 @@ type Planet @model(name:""PlanetAlias"") {
         /// </summary>
         /// <param name="entityMap">Collection of entityName -> Entity object.</param>
         /// <param name="enableGlobalRest">flag to enable or disabled REST globally.</param>
-        private static void CreateCustomConfigFile(Dictionary<string, Entity> entityMap, bool enableGlobalRest = true)
+        private static void CreateCustomConfigFile(Dictionary<string, Entity> entityMap, bool enableGlobalRest = true, bool v = false, bool enableGlobalMcp = false)
         {
             DataSource dataSource = new(
                 DatabaseType.MSSQL,
@@ -4469,6 +4472,7 @@ type Planet @model(name:""PlanetAlias"") {
                 Runtime: new(
                     Rest: new(Enabled: enableGlobalRest),
                     GraphQL: new(Enabled: true),
+                    Mcp: null,
                     Host: hostOptions
                 ),
                 Entities: new(entityMap));
@@ -4788,6 +4792,8 @@ type Planet @model(name:""PlanetAlias"") {
 
             RestRuntimeOptions restRuntimeOptions = new(Enabled: false);
 
+            McpRuntimeOptions mcpRuntimeOptions = new(Enabled: false);
+
             DataSource dataSource = new(DatabaseType.MSSQL, GetConnectionStringFromEnvironmentConfig(environment: TestCategory.MSSQL), Options: null);
 
             EntityAction createAction = new(
@@ -4846,7 +4852,7 @@ type Planet @model(name:""PlanetAlias"") {
 
             RuntimeConfig runtimeConfig = new(Schema: "IntegrationTestMinimalSchema",
                                               DataSource: dataSource,
-                                              Runtime: new(restRuntimeOptions, graphqlOptions, Host: new(Cors: null, Authentication: authenticationOptions, Mode: HostMode.Development), Cache: null),
+                                              Runtime: new(restRuntimeOptions, graphqlOptions, mcpRuntimeOptions, Host: new(Cors: null, Authentication: authenticationOptions, Mode: HostMode.Development), Cache: null),
                                               Entities: new(entityMap));
             return runtimeConfig;
         }
@@ -4859,9 +4865,9 @@ type Planet @model(name:""PlanetAlias"") {
             DataSource dataSource,
             GraphQLRuntimeOptions graphqlOptions,
             RestRuntimeOptions restOptions,
+            McpRuntimeOptions mcpOptions,
             Entity entity = null,
-            string entityName = null,
-            EntityCacheOptions cacheOptions = null
+            string entityName = null, EntityCacheOptions cacheOptions = null
             )
         {
             entity ??= new(
@@ -4896,7 +4902,7 @@ type Planet @model(name:""PlanetAlias"") {
             return new(
                 Schema: "IntegrationTestMinimalSchema",
                 DataSource: dataSource,
-                Runtime: new(restOptions, graphqlOptions,
+                Runtime: new(restOptions, graphqlOptions, mcpOptions,
                     Host: new(Cors: null, Authentication: authenticationOptions, Mode: HostMode.Development), Cache: cacheOptions),
                 Entities: new(entityMap)
             );
@@ -4970,6 +4976,7 @@ type Planet @model(name:""PlanetAlias"") {
                 Runtime: new(
                     Rest: new(),
                     GraphQL: new(),
+                    Mcp: new(),
                     Host: new(null, null)
                 ),
                 Entities: new(new Dictionary<string, Entity>())
@@ -5007,6 +5014,7 @@ type Planet @model(name:""PlanetAlias"") {
                 Runtime: new(
                     Rest: new(),
                     GraphQL: new(),
+                    Mcp: new(),
                     Host: new(Cors: null, Authentication: authenticationOptions)
                 ),
                 Entities: new(entityMap)

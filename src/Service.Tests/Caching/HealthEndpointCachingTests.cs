@@ -156,6 +156,7 @@ public class HealthEndpointCachingTests
                 Health: new(enabled: true, cacheTtlSeconds: cacheTtlSeconds),
                 Rest: new(Enabled: true),
                 GraphQL: new(Enabled: true),
+                Mcp: null,
                 Host: hostOptions
             ),
             Entities: new(entityMap));

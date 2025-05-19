@@ -261,6 +261,7 @@ namespace Cli
                 Runtime: new(
                     Rest: new(restEnabled, restPath ?? RestRuntimeOptions.DEFAULT_PATH, options.RestRequestBodyStrict is CliBool.False ? false : true),
                     GraphQL: new(Enabled: graphQLEnabled, Path: graphQLPath, MultipleMutationOptions: multipleMutationOptions),
+                    Mcp: null,
                     Host: new(
                         Cors: new(options.CorsOrigin?.ToArray() ?? Array.Empty<string>()),
                         Authentication: new(
@@ -1857,7 +1858,7 @@ namespace Cli
         /// <param name="entity">Entity for which GraphQL settings are updated</param>
         /// <param name="options">Input from update command</param>
         /// <returns>Boolean -> when the entity's GraphQL configuration is true/false.
-        /// GraphQLEntitySettings -> when a non stored procedure entity is configured with granular GraphQL settings (Type/Singular/Plural).
+        /// GraphQLEntitySettings -> when a non stored procedure entity is configured withgranular GraphQL settings (Type/Singular/Plural).
         /// GraphQLStoredProcedureEntitySettings -> when a stored procedure entity is configured with an explicit operation.
         /// GraphQLStoredProcedureEntityVerboseSettings-> when a stored procedure entity is configured with explicit operation and type settings.</returns>
         private static EntityGraphQLOptions ConstructUpdatedGraphQLDetails(Entity entity, EntityOptions options)

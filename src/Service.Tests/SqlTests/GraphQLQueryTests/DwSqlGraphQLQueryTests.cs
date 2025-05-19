@@ -1109,7 +1109,8 @@ FROM (
                    {
                        EnableDwNto1JoinQueryOptimization = true
                    }),
-                   Host: new(null, null)
+                   Mcp: null,
+                   Host: new(Cors: null, Authentication: null)
                ),
                Entities: new(new Dictionary<string, Entity>())
             );
@@ -1131,6 +1132,7 @@ FROM (
                Runtime: new(
                    Rest: new(),
                    GraphQL: new(),
+                   Mcp: null,
                    Host: new(null, null)
                ),
                Entities: new(new Dictionary<string, Entity>())

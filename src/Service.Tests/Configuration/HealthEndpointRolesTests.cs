@@ -124,10 +124,11 @@ namespace Azure.DataApiBuilder.Service.Tests.Configuration
                 Schema: string.Empty,
                 DataSource: dataSource,
                 Runtime: new(
-                    Health: new(enabled: true, roles: role != null ? new HashSet<string> { role } : null),
                     Rest: new(Enabled: true),
                     GraphQL: new(Enabled: true),
-                    Host: hostOptions
+                    Mcp: null,
+                    Host: hostOptions,
+                    Health: new(enabled: true, roles: role != null ? new HashSet<string> { role } : null)
                 ),
                 Entities: new(entityMap));
 

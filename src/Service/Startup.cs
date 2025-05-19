@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -47,6 +48,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using ModelContextProtocol.Protocol.Types;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
@@ -329,6 +331,113 @@ namespace Azure.DataApiBuilder.Service
             // Subscribe the GraphQL schema refresh method to the specific hot-reload event
             _hotReloadEventHandler.Subscribe(DabConfigEvents.GRAPHQL_SCHEMA_REFRESH_ON_CONFIG_CHANGED, (sender, args) => RefreshGraphQLSchema(services));
 
+            // MCP Server integration (start server and register all entities as MCP tools)
+            if (runtimeConfig?.Runtime?.Mcp?.Enabled == true)
+            {
+                _ = services.AddSingleton(serviceProvider =>
+                {
+                    List<Tool> tools = [];
+                    foreach (KeyValuePair<string, Entity> entityKvp in runtimeConfig.Entities)
+                    {
+                        string entityName = entityKvp.Key;
+                        // Build input schema from entity key fields (as a minimal example)
+                        Dictionary<string, object> properties = new();
+                        if (entityKvp.Value.Source.Parameters != null)
+                        {
+                            foreach (KeyValuePair<string, object> parameter in entityKvp.Value.Source.Parameters)
+                            {
+                                properties[parameter.Key] = new { type = "string" }; // You may want to infer the type more precisely
+                            }
+                        }
+
+                        List<string> requiredFields = [.. properties.Keys];
+                        var inputSchemaObj = new
+                        {
+                            type = "object",
+                            properties,
+                            required = requiredFields
+                        };
+                        Tool tool = new()
+                        {
+                            Name = $"{entityName}",
+                            Description = $"Call the {entityKvp.Value.Source.Type}: {entityName}",
+                            InputSchema = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(System.Text.Json.JsonSerializer.Serialize(inputSchemaObj))
+                        };
+                        tools.Add(tool);
+                    }
+
+                    // Only set the Tools capability, do not override the entire Capabilities object
+                    ModelContextProtocol.Server.McpServerOptions options = new()
+                    {
+                        ServerInfo = new Implementation { Name = "dab-mcp-server", Version = "1.0.0" },
+                    };
+
+                    // Fix for CS8602: Ensure `options.Capabilities` is not null before accessing its `Tools` property.
+                    options.Capabilities ??= new ServerCapabilities();
+
+                    options.Capabilities.Tools = new ToolsCapability
+                    {
+                        ListToolsHandler = (request, cancellationToken) =>
+                            ValueTask.FromResult(new ListToolsResult { Tools = tools }),
+                        CallToolHandler = (request, cancellationToken) =>
+                        {
+                            string? toolName = request.Params?.Name;
+                            if (toolName != null)
+                            {
+                                // Find the entity for the tool
+                                Entity entity = runtimeConfig.Entities[toolName];
+                                string dataSourceName = runtimeConfig.GetDataSourceNameFromEntityName(toolName);
+                                IMetadataProviderFactory? sqlMetadataProviderFactory = serviceProvider.GetService<IMetadataProviderFactory>();
+                                if (sqlMetadataProviderFactory == null)
+                                {
+                                    throw new Exception("IMetadataProviderFactory service not found.");
+                                }
+
+                                ISqlMetadataProvider sqlMetadataProvider = sqlMetadataProviderFactory.GetMetadataProvider(dataSourceName);
+                                Config.DatabasePrimitives.DatabaseObject dbObject = sqlMetadataProvider.EntityToDatabaseObject[toolName];
+                                DatabaseType databaseType = runtimeConfig.GetDataSourceFromDataSourceName(dataSourceName).DatabaseType;
+                                IQueryEngineFactory? queryEngineFactory = serviceProvider.GetService<IQueryEngineFactory>();
+                                IQueryEngine? queryEngine = queryEngineFactory?.GetQueryEngine(databaseType);
+
+                                // Assume input is in request.Params.Arguments as a dictionary
+                                System.Text.Json.JsonElement? argsElement = null;
+                                if (request.Params?.Arguments is IReadOnlyDictionary<string, System.Text.Json.JsonElement> dict)
+                                {
+                                    string json = System.Text.Json.JsonSerializer.Serialize(dict);
+                                    argsElement = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(json);
+                                }
+
+                                if (queryEngine == null)
+                                {
+                                    throw new Exception("Query engine not found for database type: " + databaseType);
+                                }
+
+                                StoredProcedureRequestContext spContext = new(
+                                    toolName,
+                                    dbObject,
+                                    argsElement,
+                                    EntityActionOperation.Execute);
+
+                                Microsoft.AspNetCore.Mvc.IActionResult result = queryEngine.ExecuteAsync(spContext, dataSourceName).GetAwaiter().GetResult();
+                                string jsonResult = System.Text.Json.JsonSerializer.Serialize(result);
+                                return ValueTask.FromResult(new CallToolResponse
+                                {
+                                    Content = [new Content { Text = jsonResult, Type = "application/json" }]
+                                });
+                            }
+
+                            throw new Exception($"Unknown tool: '{toolName}'");
+                        },
+                    };
+
+                    ModelContextProtocol.Protocol.Transport.StdioServerTransport transport = new("dab-mcp-server");
+                    ModelContextProtocol.Server.IMcpServer server = ModelContextProtocol.Server.McpServerFactory.Create(transport, options);
+                    server.RunAsync().Wait();
+                    _logger?.LogInformation("MCP server started and entities registered as tools.");
+                    return server;
+                });
+            }
+
             services.AddFusionCache()
                 .WithOptions(options =>
                 {
@@ -576,6 +685,9 @@ namespace Azure.DataApiBuilder.Service
                     ResponseWriter = app.ApplicationServices.GetRequiredService<BasicHealthReportResponseWriter>().WriteResponse
                 });
             });
+
+            // Force MCP server singleton to be created and started if enabled
+            app.ApplicationServices.GetService(typeof(ModelContextProtocol.Server.IMcpServer));
         }
 
         /// <summary>
@@ -876,6 +988,7 @@ namespace Azure.DataApiBuilder.Service
                 }
 
                 _logger.LogInformation("Successfully completed runtime initialization.");
+
                 return true;
             }
             catch (Exception ex)

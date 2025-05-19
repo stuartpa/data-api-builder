@@ -2,7 +2,7 @@
   "profiles": {
     "Cli": {
       "commandName": "Project",
-      "commandLineArgs": "start",
+      "commandLineArgs": "start\r\n--config\r\nc:/src/Restaurant/RestaurantDb/Runtime/Manager.dab-config.json",
       "httpPort": 5002
     }
   }
